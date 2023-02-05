@@ -1,0 +1,16 @@
+\section{What are Bandits?}
+Bandits are one of the fundamental and simplest RL problems to solve.
+One can relate Bandits to the notion of Slot Machines at any Casino, and the function the same --- You pull a lever, you either get a reward or a penalty.
+Similarly, in the bandit problem, you (hypothetically) pull an arm or the agent takes an action of pulling the arm and then immediately receives a reward.
+
+The goal of the RL Agent in this Problem setting, is to maximize the reward obtained.
+Now this is nothing special with one-arm-ed Bandit, just think of a casino slot machine with only one-lever. So to make the problem more interesting, there is a notion of Multi-Armed Bandits have been introduced into the picture.
+
+Think of Multi-Armed Bandit problems as Bandit Problems, but with multiple arms and each arm giving a reward from a different probability distribution.
+So we know there is a best arm, who expected reward is maximum among all the other arm --- Now, the goal of our agent should be to find that particular arm with the maximum reward.
+
+\noindent\textbf{The bigger question is how do we find it?}
+\\One way to approach this is to select each one in turn and keep track of how much you received, then keep going back to the one that paid out the most.
+This is possible, but, as stated before, each bandit has an underlying probability distribution associated with it, meaning that you may need more samples before finding the right one.
+But, each pull you spend trying to figure out the best bandit to play takes you away from maximizing your total reward, because in reality to play a casino machine you would need to put some money.
+We call this notion of the amount of tries required till it finds the best arm (or policy) as the \textbf{Regret}.

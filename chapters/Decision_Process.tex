@@ -1,0 +1,126 @@
+\section{Decision Process}
+Mostly we are dealing with indefinite horizon and infinite horizon problems.
+\textbf{Infinite Horizon} problems are those when the process may go on forever; on contrary \textbf{Indefinite Horizon} problems are those cases when the agent will eventually stop, but where it does not know when it will stop.
+
+To model the \textbf{Infinite Horizon} problems, we augment the \textbf{Markov Chain} with actions.
+At each stage, the agent decides which action to perform $\rightarrow$ The Resulting State depends on both:
+\begin{itemize}
+    \item the previous state.
+    \item the action performed.
+\end{itemize}
+
+For an ongoing process, only the utility at the end may not always be ideal to be considered, because the RL-Agent may never get to the end.
+Instead, an agent can receive a sequence of \textbf{rewards}.
+These rewards incorporate the \texttt{action\_costs} in addition to any prizes or penalties that may be awarded.
+Negative Rewards are actually the \textit{Punishments}.
+
+\textbf{Indefinite Horizon} problems can be modeled using a stopping state.
+A \textbf{Stopping State} (or \textit{Absorbing State}) is a state in which all actions have no effect, i.e. when the Agent is in that state, all actions immediately return to that state with a \textit{Zero(0) Reward}.
+Goal achievements can be modeled by having a reward for entering such a stopping state.
+
+\begin{framedthm}[NOTE]\label{Note:NOTE_01}
+    Stationary Models are considered where the state transitions and the rewards \textbf{DO NOT} depend on time.
+\end{framedthm}
+
+\subsection{Markov Decision Process}
+A \textbf{Markov decision process} or an \textbf{MDP} consists of
+\begin{itemize}[leftmargin=*]
+    \item   $S$ $\rightarrow$ a set of states of the world.
+    \item   $A$ $\rightarrow$ a set of actions.
+    \item   $P:S\times S\times A \rightarrow [0,1]$ , which specifies the dynamics. This is written $P(s_{t+1}|s_{t},a)$, where
+    $$
+    \forall s_t \in S \ \forall a_t \in A \sum_{s_{t} \in S} P(s_{t+1}|s_{t},a_{t}) = 1
+    $$
+        In particular, $P(s_{t+1}|s_t,a_t)$ specifies the probability of transitioning to state $s_{t+1}$ given that the agent is in state $s_t$ and does action $a_t$.
+    \item  $R:S \times A \times S \rightarrow \textbf{R}$, where $R(s_t,a_t,s_{t+1})$ gives the expected immediate reward from doing action $a_t$ and transitioning to state $s_{t+1}$ from state $s_t$.
+\end{itemize}
+
+Both the \textit{Dynamics} and the \textit{Rewards} can be \textbf{Stochastic}.
+\begin{itemize}[leftmargin=*]
+    \item There can be some randomness in the resulting state and reward, which is modeled by having a distribution over the resulting state and by \texttt{R} giving the \textit{expected} reward.
+    \item The outcomes are stochastic when they depend on random variables that are not modeled in the MDP.
+\end{itemize}
+% ![[Decision_Network_Representation_MDP.png]]
+A finite part of a Markov decision process can be depicted using a decision network in the above picture.
+
+With Decision Networks, the designer also has to consider what information is available to the agent when it decides what to do.
+There are two common variations of the same:
+\begin{itemize}[leftmargin=*]
+    \item In a \textbf{Fully Observable MDP (FOMDP)}, the agent gets to observe the current state when deciding what to do.
+    \item A \textbf{Partially Observable MDP (POMDP)} is a combination of an MDP and a \textit{Hidden Markov Model}.
+    \begin{itemize}
+        \item At each time point, the agent gets to make some observations that depend on the state.
+        \item The Agent only has access to the history of observations and previous actions when making a decision.
+        \item It cannot directly observe the current state.
+    \end{itemize}
+\end{itemize}
+
+To decide what to do, the agent compares different sequences of rewards. The most common way to do this is to convert a sequence of rewards into a number called the \textbf{value} or the
+\textbf{cumulative reward}.
+To do this, the agent combines an immediate reward with other rewards in the future.
+
+Suppose, the agent receives a sequence of rewards:
+$$r_1,r_2,r_3,\dots$$
+There are three common ways to combine rewards into a value V:
+\begin{enumerate}[leftmargin=*]
+%
+\item %
+    \textbf{Total Reward:}
+    $$V = \sum_{i=1}^{\infty} r_i$$
+    In this case, the \textbf{value} is the sum of all of the rewards. It is ideal when one can guarantee that the \textbf{sum is finite}.
+    If the sum is infinite, it \textit{does not} give any opportunity to compare which sequence of rewards is \textit{preferable}.
+%
+\item % 
+    \textbf{Average Reward:}
+    $$V = \lim_{n \rightarrow \infty}\frac{(r_1+r_2+\dots + r_n)}{n}$$
+    In this case, the Agent's \textbf{value} is the Average of its rewards, averaged over for each time period. As long as the rewards are \textbf{finite}, this value will also be \textbf{finite}.
+    However, whenever the total reward if \textbf{finite}, the average reward is \textbf{Zero}, and thus the average reward will fail to allow the agent to choose among different actions that each have a zero average reward. 
+%
+\item %
+    \textbf{Discounted Reward:}
+    $$
+    V = r_1+\gamma r_2 + \gamma^2r_3 + \dots + \gamma^{i-1}r_i + \dots
+    $$
+    where $\gamma \rightarrow$ \textbf{Discount Factor} $\rightarrow$ is a number in the range $[0, 1)$. Under this case, the future rewards are worth less than the current reward.
+  \begin{itemize}
+		  \item If $\gamma == 1$, $\rightarrow$ \textbf{Total Reward}.
+		  \item If $\gamma == 0$, $\rightarrow$ Agent ignores all future rewards.
+		  \item If $0 \leq \gamma < 1$,
+            \begin{itemize}
+				\item[] then,
+				\item[] \ \ \ \ if Rewards are \textbf{finite},
+				\item[] \ \ \ \ then,
+				\item[] \ \ \ \ \ \ \ \ total\_value $\rightarrow$ also finite.
+            \end{itemize}
+  \end{itemize}
+Discounted Reward can also be represented as:
+
+\begin{equation*}
+\begin{split}
+     V &= \sum_{i=1}^\infty \gamma^{i-1}r_i\\
+     &= r_1+\gamma r_2 + \gamma^2 r_3 + \dots + \gamma^{i-1}r_i + \dots\\
+     &= r_1 + \gamma (r_2 + \gamma (r3 + \dots))
+\end{split}
+\end{equation*}
+%
+Suppose $V_k$ is the reward accumulated from time $k$:
+\begin{equation*}
+    \begin{split}
+    V_k &= r_k + \gamma(r_{k+1} + \gamma(r_{k+2} + \dots))\\
+    &= r_k + \gamma V_{k+1}
+    \end{split}
+\end{equation*}
+
+\end{enumerate}
+
+\subsection{Stationary Point}
+A \textbf{stationary policy} is a function $\pi_t:S \rightarrow A$. That is, it assigns an \textbf{action} to \textit{each state}.
+Given a reward criterion, a policy has an expected value for every state.
+Let $V^{\pi_t}(s_t)$ be the expected value of following $\pi_t$ in state $s_t$. This specifies how much value the agent expects to receive from following the policy in that state.
+Policy $\pi_t$ is an \textit{optimal policy}, if there is no policy $\pi_t'$ and no state $s_t'$ such that $V^{\pi'_t}(s_t')>V^{\pi_t}(s_t)$.
+That is, it is a policy that has a greater or equal expected value at every state than any other policy.
+
+For \textbf{infinite horizon problems}, a stationary MDP always has an optimal stationary policy.
+However, this is not true for \textbf{finite-stage problems}, where a non-stationary policy might be better than all stationary policies.
+
+\noindent For example, if the agent had to stop at time $n$, for the last decision in some state, the agent would act to get the largest immediate reward without considering the future actions, but for earlier decisions at the same state it may decide to get a lower reward immediately to obtain a larger reward later.
