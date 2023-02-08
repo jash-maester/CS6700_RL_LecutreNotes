@@ -1,0 +1,40 @@
+\chapter{Evaluation \& Control}
+%
+\section{Monte Carlo (MC) Method}
+%
+In Dynamic Programming (DP), an agent needs to have the knowledge about the MDP transitions and rewards, with which the agent does \textbf{planning}.
+No \textit{real} leaning is done by the agent in a DP setting.
+
+Monte Carlo method on the other hand, is  fairly simple concept where agent learns about the states and reward when it interacts with the environment.
+The agent needs to generate samples and then based on average return, value is calculated for a state or state-action.
+
+The Key characteristics of Monte Carlo (MC) methods are as follows:
+\begin{itemize}[leftmargin=*]
+    \item There is no model --- The agent has no prior knowledge of MDP Transition.
+    \item Agent learns from sampled experience.
+    \item Learns state-value $v_\pi(s)$ under policy $\pi$ by experiencing average return from all sampled episodes --- Value == Average Expected Return of that State == Discounted Sum of all rewards.
+    $$G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T-1} r_{T}$$
+    $$v_\pi (s) = \mathbb{E}_\pi [G_t | S_t = s]$$
+    \item Only after completing an episode the values are updated. --- Convergence is slow.
+    \item No Bootstrapping.
+    \item Can only be used in episodic problems.
+\end{itemize}
+
+Generally Monte Carlo Methods can be classified in two forms:
+\begin{itemize}
+    \item First visit Monte Carlo
+    \item Every visit Monte Carlo
+\end{itemize}
+
+\subsection{First Visit Monte Carlo}
+In this case only the first visit to any state is considered or counted, future transitions to that state is ignored.
+\begin{itemize}[leftmargin=*]
+    \item To evaluate state $s$, first we set number of visits and total return to 0.
+    \item The first time that state $s$ is visited in an episode, increment the counter by 1.
+    \item Increment the total return.
+    \item Estimate the value using mean return.
+\end{itemize}
+
+\subsection{Every Visit Monte Carlo}
+In this case all the visits to any state are considered or counted.
+Algorithm is similar to the previous instance.
